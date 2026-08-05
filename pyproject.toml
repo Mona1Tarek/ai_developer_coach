@@ -1,7 +1,7 @@
 [project]
 name = "ai_developer_coach"
 version = "0.1.0"
-description = "AI-powered developer coaching assistant for Python and SQL"
+description = "AI-powered developer coaching assistant for Python"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
