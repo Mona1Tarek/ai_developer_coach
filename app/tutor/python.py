@@ -1,37 +1,12 @@
-import json
-import re
-from pathlib import Path
+"""Pure (non-executing) Python code review service."""
 
-from openai import APIStatusError
+from app.schemas.review_schema import ReviewResponse
+from app.tutor.utils import call_model_and_parse_json, load_system_prompt
 
-from app.schemas.review import ReviewResponse
-from app.tutor import generate_response
-
-
-def _extract_json(text: str) -> str:
-    text = text.strip()
-    match = re.search(r"```(?:json)?\s*\n?(.*?)\n?```", text, re.DOTALL)
-    if match:
-        return match.group(1).strip()
-    return text
+_REVIEW_SYSTEM_PROMPT = "python_system.yaml"
 
 
 def review_python_code(code: str) -> ReviewResponse:
-    prompt_path = Path(__file__).parent / "prompts" / "python_system.yaml"
-    system_prompt = prompt_path.read_text(encoding="utf-8")
-
-    try:
-        raw = generate_response(system_prompt=system_prompt, user_prompt=code)
-    except APIStatusError as e:
-        raise RuntimeError(
-            f"LLM API returned status {e.status_code}: {e.message}"
-        ) from e
-
-    try:
-        data = json.loads(_extract_json(raw))
-    except json.JSONDecodeError as e:
-        raise RuntimeError(
-            f"Model returned invalid JSON (response: {raw[:500]})"
-        ) from e
-
+    system_prompt = load_system_prompt(_REVIEW_SYSTEM_PROMPT)
+    data = call_model_and_parse_json(system_prompt=system_prompt, user_prompt=code)
     return ReviewResponse.model_validate(data)
