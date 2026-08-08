@@ -9,8 +9,6 @@ class ReviewRequest(BaseModel):
 class Mistake(BaseModel):
     title: str
     explanation: str
-    severity: str
-
 
 class ErrorExplanation(BaseModel):
     error_type: str

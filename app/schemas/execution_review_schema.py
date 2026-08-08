@@ -53,10 +53,14 @@ class ValidationFeedback(BaseModel):
     Attributes:
         valid: True if the snippet passed all static checks.
         errors: Generic, human-readable reasons the snippet was rejected.
+        validation_explanation: Optional LLM-written explanation of the
+            validation outcome, intended to be educational. This is None when
+            validation passes or the LLM pass is disabled.
     """
 
     valid: bool
     errors: list[str] = []
+    validation_explanation: str | None = None
 
 
 class ExecuteReviewResponse(BaseModel):
@@ -64,12 +68,11 @@ class ExecuteReviewResponse(BaseModel):
 
     ``execution`` and ``review`` are None when static validation fails, in
     which case ``validation`` carries generic rejection reasons. When enabled,
-    ``validation_explanation`` holds an LLM-written, educational explanation
-    of that failure; it is None when validation passes or the LLM pass is
-    disabled.
+    ``validation.validation_explanation`` holds an LLM-written, educational
+    explanation of that failure; it is None when validation passes or the LLM
+    pass is disabled.
     """
 
     validation: ValidationFeedback
     execution: ExecutionResultInfo | None = None
     review: ReviewResponse | None = None
-    validation_explanation: str | None = None

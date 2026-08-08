@@ -61,7 +61,7 @@ def execute_review(
     Returns:
         An ExecuteReviewResponse. When static validation fails, ``execution``
         and ``review`` are left empty and, unless disabled, the LLM explains
-        the validation failure via ``validation_explanation``.
+        the validation failure via ``validation.validation_explanation``.
     """
     validation = validate_python_code(code)
     if not validation.valid:
@@ -72,8 +72,11 @@ def execute_review(
         user_messages = validation_user_messages(validation)
         llm_payload = validation_llm_payload(validation)
         return ExecuteReviewResponse(
-            validation=ValidationFeedback(valid=False, errors=user_messages),
-            validation_explanation=explain_validation_failure(code, llm_payload),
+            validation=ValidationFeedback(
+                valid=False,
+                errors=user_messages,
+                validation_explanation=explain_validation_failure(code, llm_payload),
+            ),
         )
 
     result = execute_python_code(code, timeout_seconds=timeout_seconds)

@@ -42,7 +42,6 @@ Return a JSON object with the following structure:
     {
       "title": "Short name of the issue",
       "explanation": "Detailed description of the potential issue or bug",
-      "severity": "high | medium | low"
     }
   ],
   "strengths": ["List of what the code does well"],
