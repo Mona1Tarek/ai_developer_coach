@@ -1,18 +1,39 @@
-"""
-Pydantic models for the execute-review pipeline.
+"""Pydantic output models for the execute-review pipeline.
 
 The execute-review endpoint runs the user's code in the sandbox and asks the
 LLM to explain the *actual* execution result. These models describe that
-combined response. Existing schemas are reused where possible: the request
-body is :class:`ExecutionRequest`, the ``review`` block is
-:class:`ReviewResponse`, and validation output is exposed to the client as
-the sanitized :class:`ValidationFeedback`.
+combined response. The request body is :class:`ExecutionRequest` (defined in
+``execution_schema``); everything the client receives back is modeled here.
 """
 
 from pydantic import BaseModel
 
 from app.schemas.execution_schema import ExecutionResult
-from app.schemas.review_schema import ReviewResponse
+
+
+class Mistake(BaseModel):
+    title: str
+    explanation: str
+
+
+class ErrorExplanation(BaseModel):
+    error_type: str
+    explanation: str
+
+
+class Suggestion(BaseModel):
+    title: str
+    explanation: str
+
+
+class ReviewResponse(BaseModel):
+    """LLM-written review of the executed code."""
+
+    errors_count: int = 0
+    error_explanation: list[ErrorExplanation]
+    mistakes: list[Mistake]
+    strengths: list[str]
+    suggestions: list[Suggestion]
 
 
 class ExecutionResultInfo(BaseModel):
