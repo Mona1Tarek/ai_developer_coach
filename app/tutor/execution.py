@@ -16,13 +16,13 @@ from app.sandbox.validator import (
     validation_llm_payload,
     validation_user_messages,
 )
-from app.schemas.execution_review_schema import (
+from app.schemas.execution_schema import ExecutionResult
+from app.schemas.output_schema import (
     ExecuteReviewResponse,
     ExecutionResultInfo,
+    ReviewResponse,
     ValidationFeedback,
 )
-from app.schemas.execution_schema import ExecutionResult
-from app.schemas.review_schema import ReviewResponse
 from app.tutor.utils import (
     call_model_and_parse_json,
     call_model_text,
